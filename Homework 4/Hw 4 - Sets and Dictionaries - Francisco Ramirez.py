@@ -1,9 +1,9 @@
 #Programmer Name: Francisco Ramirez
 #Date: March 5, 2020
-#Hw 4 - Using dictionaries
+#Hw 4 - Using dictionaries/Pickle
 
-# This program uses a dictionary to keep friends'
-# names and birthdays.
+import pickle
+FILE = "emails.dat"
 
 # Constants for menu choices
 LOOK_UP = 1
@@ -16,7 +16,7 @@ QUIT = 6
 # main function
 def main():
     # Declarations
-    emails = {}
+    emails = load_emails()
     choice = 0
 
 #Switch Menu
@@ -24,7 +24,7 @@ def main():
         choice = menu()
 
         if choice == LOOK_UP:
-            look_up(emails)
+            _look_up(emails)
         elif choice == ADD:
             add(emails)
         elif choice == CHANGE:
@@ -33,6 +33,11 @@ def main():
             delete(emails)
         elif choice == DISPLAY:
             display(emails)
+
+    #save
+    save_emails(emails)
+    print('The information was saved.')
+            
 
 #------------------------------------#
 #-------------METHODS-----------------#
@@ -58,8 +63,31 @@ def menu():
     
     return(choice)
 
+def load_emails():
+    #Error catching
+    try:
+        #Open the file
+        input_file = open(FILE,"rb")
+        email_dictionary = pickle.load(input_file)
+        input_file.close()
 
-def look_up(emails):
+    except IOError:
+        email_dictionary = {}
+        
+    return email_dictionary
+
+def save_emails(emails):
+
+    output_file = open(FILE, 'wb')
+
+    #pickle the dictionary and save it.
+    pickle.dump(emails, output_file)
+
+    #close file
+    output_file.close()
+
+
+def _look_up(emails):
     name = input('Enter a name: ')
     print(emails.get(name,(name + ' not found.')))
 
@@ -96,7 +124,7 @@ def display(emails):
     print("-------------------")
     for key in emails:
         print(key, emails[key])
-        
+
 # Call the main function.
 main()
 
